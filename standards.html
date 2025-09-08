@@ -3,139 +3,222 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nexo Custom Interior — 工作日志</title>
-  <meta name="description" content="Nexo Custom Interior 员工工作日志入口：阿恒中午与晚上两次填写 Google 表单。" />
+  <title>Nexo Custom Interior — 施工标准</title>
+  <meta name="description" content="Nexo Custom Interior 施工标准图文库，支持手机临时标注（刷新后清除）。" />
   <style>
     :root{
-      --bg:#0f172a; --card:#111827; --muted:#94a3b8; --text:#e5e7eb;
-      --brand:#ff6b35; --ok:#22c55e; --warn:#fbbf24; --err:#ef4444; --ring: rgba(255,107,53,.35);
+      --bg:#0f172a; --panel:#0b1222; --card:#111827; --muted:#94a3b8; --text:#e5e7eb; --brand:#ff6b35;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans SC","PingFang SC",Arial,sans-serif;background:radial-gradient(1200px 800px at 70% -10%, #1f2937 0%, var(--bg) 60%);color:var(--text);display:flex;flex-direction:column;min-height:100vh}
-    header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(15,23,42,.95),rgba(15,23,42,.75));backdrop-filter:blur(6px);border-bottom:1px solid #1f2937}
-    .wrap{max-width:1000px;margin:0 auto;padding:16px 20px}
-    .brand{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}
-    .logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:conic-gradient(from 180deg,#ffedd5,#fecaca,#fde68a,#ffedd5);color:#111;font-weight:900;letter-spacing:.5px;box-shadow:0 8px 24px rgba(255,107,53,.2)}
-    .brand h1{font-size:1.15rem;margin:0}
-    .brand small{display:block;color:var(--muted);font-weight:500}
-    .nav a{margin-left:16px;color:#ffd3c3;text-decoration:none;font-weight:700}
-    .hero{padding:32px 20px 12px}
-    .hero .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
-    @media(max-width:800px){.hero .grid{grid-template-columns:1fr}}
-    .badge{display:inline-flex;align-items:center;gap:.5rem;padding:8px 12px;border-radius:999px;font-weight:700;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
-    .highlight{font-size:clamp(24px,4vw,38px);line-height:1.2;margin:10px 0 0;font-weight:800;background:linear-gradient(90deg,#fff 0%,#ffe1d6 40%,#ffd0c2 60%,#fff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 1px 0 rgba(255,255,255,.05)}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-    .card h3{margin:0 0 6px}
-    .muted{color:var(--muted)}
-    .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:14px}
-    @media(max-width:700px){.tiles{grid-template-columns:1fr}}
-    .tile .top{display:flex;align-items:center;gap:10px;justify-content:space-between}
-    .when{font-size:.9rem;color:var(--muted)}
-    .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .btn{appearance:none;border:none;cursor:pointer;font-weight:700;padding:12px 16px;border-radius:12px;color:#111;background:#fff;box-shadow:0 8px 20px rgba(255,255,255,.08);outline:2px solid transparent;outline-offset:2px;transition:.2s ease}
-    .btn:focus{outline-color:var(--ring)}
-    .btn.brand{background:linear-gradient(180deg,#ffd3c3,#ffbd9d);color:#111}
-    .btn.ghost{background:transparent;color:var(--text);border:1px dashed rgba(255,255,255,.25)}
-    .btn.done{background:linear-gradient(180deg,#c7f9cc,#86efac);color:#064e3b}
-    .status{display:flex;align-items:center;gap:8px;margin-top:10px}
-    .dot{width:10px;height:10px;border-radius:999px;box-shadow:0 0 0 3px rgba(0,0,0,.15) inset}
-    .dot.ok{background:var(--ok)}.dot.warn{background:var(--warn)}.dot.err{background:var(--err)}
-    footer{margin-top:auto;opacity:.9}
-    footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    footer small{color:var(--muted)}
-    .kbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .kbar kbd{background:#0b1222;border:1px solid rgba(255,255,255,.15);padding:6px 10px;border-radius:8px;color:#cbd5e1}
-    .clock{font-variant-numeric:tabular-nums}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans SC","PingFang SC",Arial,sans-serif;background:radial-gradient(1200px 800px at 70% -10%, #1f2937 0%, var(--bg) 60%);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+    a{color:#ffd3c3}
+    header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(15,23,42,.95),rgba(15,23,42,.75));backdrop-filter: blur(6px);border-bottom:1px solid #1f2937}
+    .wrap{max-width:1100px;margin:0 auto;padding:14px 18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:conic-gradient(from 180deg,#ffedd5,#fecaca,#fde68a,#ffedd5);color:#111;font-weight:900}
+    .brand h1{font-size:1.1rem;margin:0}
+    .nav{margin-left:auto;display:flex;gap:10px}
+    .nav a{background:#1e293b;color:#e5e7eb;text-decoration:none;padding:8px 12px;border-radius:8px}
+
+    .panel{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px}
+    .grid{display:grid;grid-template-columns:280px 1fr;gap:16px}
+    @media (max-width: 900px){.grid{grid-template-columns:1fr}}
+
+    .sidebar{display:flex;flex-direction:column;gap:12px}
+    .sidebar h3{margin:0 0 6px}
+    .cats{display:grid;gap:8px}
+    .cats button{background:#1e293b;color:#e5e7eb;border:1px solid rgba(255,255,255,.08);padding:10px 12px;text-align:left;border-radius:10px;cursor:pointer}
+    .cats button.active{outline:2px solid rgba(255,107,53,.35);background:#243244}
+
+    .viewer{display:flex;flex-direction:column;gap:10px}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .toolbar .btn{background:#fff;color:#111;font-weight:700;border:none;border-radius:8px;padding:8px 12px;cursor:pointer}
+    .toolbar .btn.ghost{background:transparent;color:#e5e7eb;border:1px dashed rgba(255,255,255,.25)}
+    .toolbar label{display:flex;align-items:center;gap:6px;background:#0b1222;border:1px solid rgba(255,255,255,.15);padding:8px 10px;border-radius:8px}
+
+    .stage{position:relative;background:#0b1222;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;min-height:300px}
+    .stage img{display:block;max-width:100%;height:auto;margin:0 auto}
+    canvas#sketch{position:absolute;inset:0;touch-action:none}
+
+    .desc{background:#0b1222;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;color:#cbd5e1}
+    footer{margin-top:auto}
+    footer .wrap{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;color:#94a3b8}
   </style>
 </head>
 <body>
   <header>
     <div class="wrap brand">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div class="logo">NX</div>
-        <div>
-          <h1>Nexo Custom Interior <small>— Seattle</small></h1>
-          <small>高端室内翻新 · 品质至上</small>
-        </div>
-      </div>
+      <div class="logo">NX</div>
+      <h1>Nexo Custom Interior — 施工标准</h1>
       <nav class="nav">
-        <a href="standards.html">施工标准</a>
+        <a href="index.html">返回工作日志</a>
       </nav>
     </div>
   </header>
-  <section class="wrap hero">
+
+  <main class="wrap" style="padding:18px 18px 28px">
     <div class="grid">
-      <div class="card">
-        <span class="badge">🐷 🐷 🐷</span>
-        <h2 class="highlight">一群猪在西雅图搞装修</h2>
-        <p class="muted">A bunch of piggies doing remodel work in the Seattle area — and doing it well.</p>
-        <div class="kbar">
-          <kbd>Hi, 阿恒 👋</kbd>
-          <kbd>每天填写 2 次：中/晚</kbd>
-          <kbd class="clock" id="clock">--:--</kbd>
+      <!-- Sidebar: categories and image pickers -->
+      <aside class="sidebar panel">
+        <h3>类目</h3>
+        <div class="cats" id="catList"></div>
+        <div class="panel" style="margin-top:8px">
+          <strong>当前图片</strong>
+          <div id="imageList" style="margin-top:8px;display:grid;gap:6px"></div>
         </div>
-      </div>
-      <div class="card">
-        <h3>使用说明</h3>
-        <ol class="muted">
-          <li>点击按钮跳转到 Google 表单进行填写。</li>
-          <li>提交后回到本页，点击“标记完成”。</li>
-          <li>系统会在每天 00:00 自动重置今日状态。</li>
-        </ol>
-      </div>
+        <div class="panel" style="margin-top:8px">
+          <strong>如何上传照片？</strong>
+          <ol style="margin:8px 0 0 18px;color:#cbd5e1">
+            <li>把图片放到 <code>/assets/standards/类目名/</code> 目录（如 <code>assets/standards/踢脚线标准/</code>）。</li>
+            <li>在下面的 <code>DATA</code> 配置里添加文件名数组（示例已给）。</li>
+            <li>保存并刷新本页面即可看到新图片。</li>
+          </ol>
+        </div>
+      </aside>
+
+      <!-- Viewer -->
+      <section class="viewer">
+        <div class="toolbar">
+          <button class="btn" id="prevBtn">上一张</button>
+          <button class="btn" id="nextBtn">下一张</button>
+          <button class="btn ghost" id="clearDraw">清除临时标注</button>
+          <label>笔粗细<input id="size" type="range" min="2" max="20" value="6"></label>
+          <label>笔颜色<input id="color" type="color" value="#ff6b35"></label>
+        </div>
+        <div class="stage" id="stage">
+          <img id="photo" alt="标准示例" src=""/>
+          <canvas id="sketch"></canvas>
+        </div>
+        <div class="desc" id="desc">选择左侧类目与图片进行查看。可在图片上临时绘画，刷新后自动清空。</div>
+      </section>
     </div>
-    <div class="tiles">
-      <div class="card tile" id="tile-morning">
-        <div class="top">
-          <div>
-            <h3>中午日志</h3>
-            <div class="when">建议时间：11:30 — 13:30</div>
-          </div>
-          <div class="status"><span class="dot warn" id="dot-morning"></span><span id="state-morning">今日未完成</span></div>
-        </div>
-        <div class="btnrow">
-          <a class="btn brand" href="https://docs.google.com/forms/d/e/1FAIpQLSfVvb7ZxaSVKEXi5evcbJjSInKRGi3KvkUa7x-eVsY1UDX4aA/viewform?usp=header" target="_blank">打开表单</a>
-          <button class="btn ghost" id="mark-morning">标记完成</button>
-        </div>
-        <div class="muted" id="time-morning"></div>
-      </div>
-      <div class="card tile" id="tile-evening">
-        <div class="top">
-          <div>
-            <h3>晚班日志</h3>
-            <div class="when">建议时间：17:00 — 21:00</div>
-          </div>
-          <div class="status"><span class="dot warn" id="dot-evening"></span><span id="state-evening">今日未完成</span></div>
-        </div>
-        <div class="btnrow">
-          <a class="btn brand" href="https://docs.google.com/forms/d/1WmPeD936oUCeNvHnlOWLoGrZ3CFR41jmgoIKucpjAJo/viewform?usp=header" target="_blank">打开表单</a>
-          <button class="btn ghost" id="mark-evening">标记完成</button>
-        </div>
-        <div class="muted" id="time-evening"></div>
-      </div>
-    </div>
-  </section>
+  </main>
+
   <footer>
     <div class="wrap">
-      <small>© <span id="year"></span> Nexo Custom Interior. All rights reserved.</small>
-      <small>Seattle, WA · (206) 681-0020 · contact@nexoci.com</small>
+      <small>© <span id="year"></span> Nexo Custom Interior</small>
+      <small style="opacity:.8">临时标注不会保存；刷新即清除。</small>
     </div>
   </footer>
+
   <script>
-    const $=(s)=>document.querySelector(s);
-    const todayKey=()=>new Date().toISOString().slice(0,10);
-    const k=(slot)=>`log:${todayKey()}:${slot}`;
-    function mark(slot){const now=new Date();const stamp=now.toLocaleString();localStorage.setItem(k(slot),stamp);render();}
-    function isDone(slot){return !!localStorage.getItem(k(slot));}
-    function resetIfNewDay(){const last=localStorage.getItem('log:lastDay');const t=todayKey();if(last!==t){Object.keys(localStorage).forEach(key=>{if(key.startsWith('log:')&&!key.includes(t))localStorage.removeItem(key)});localStorage.setItem('log:lastDay',t);}}
-    function setState(slot,done){const dot=$(`#dot-${slot}`);const label=$(`#state-${slot}`);const time=$(`#time-${slot}`);const stamp=localStorage.getItem(k(slot));if(done){dot.classList.remove('warn','err');dot.classList.add('ok');label.textContent='今日已完成';time.textContent=stamp?`完成时间：${stamp}`:'';}else{dot.classList.remove('ok','err');dot.classList.add('warn');label.textContent='今日未完成';time.textContent='';}}
-    function render(){setState('morning',isDone('morning'));setState('evening',isDone('evening'));}
-    function tick(){const now=new Date();$('#clock').textContent=now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});}
-    document.addEventListener('DOMContentLoaded',()=>{
-      $('#year').textContent=new Date().getFullYear();resetIfNewDay();render();tick();setInterval(tick,1000);
-      $('#mark-morning').addEventListener('click',()=>mark('morning'));
-      $('#mark-evening').addEventListener('click',()=>mark('evening'));
-    });
+    // ======== DATA（替换为你的真实文件名；保持目录结构） ========
+    // 每个类目对应一个图片列表；文件放在 /assets/standards/{类目}/ 目录下
+    const DATA = {
+      "踢脚线标准": ["baseboard_01.jpg", "baseboard_02.jpg"],
+      "门框标准":   ["doorframe_01.jpg"],
+      "打胶标准":   ["caulk_01.jpg", "caulk_02.jpg"],
+      "补洞标准":   ["patch_01.jpg"],
+      "平整标准":   ["flatness_01.jpg"]
+    };
+    const BASE = "assets/standards/"; // 根目录
+
+    // ======== DOM refs ========
+    const catList = document.getElementById('catList');
+    const imageList = document.getElementById('imageList');
+    const img = document.getElementById('photo');
+    const desc = document.getElementById('desc');
+    const stage = document.getElementById('stage');
+    const canvas = document.getElementById('sketch');
+    const ctx = canvas.getContext('2d');
+
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const clearBtn = document.getElementById('clearDraw');
+    const size = document.getElementById('size');
+    const color = document.getElementById('color');
+
+    let currentCat = Object.keys(DATA)[0] || null;
+    let currentIndex = 0;
+
+    // ======== Init ========
+    document.getElementById('year').textContent = new Date().getFullYear();
+    buildCats();
+    if(currentCat){ loadCat(currentCat); }
+    window.addEventListener('resize', fitCanvas);
+
+    function buildCats(){
+      catList.innerHTML = '';
+      Object.keys(DATA).forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = cat;
+        btn.className = 'cat';
+        btn.addEventListener('click', ()=> loadCat(cat));
+        catList.appendChild(btn);
+      });
+    }
+
+    function loadCat(cat){
+      currentCat = cat; currentIndex = 0;
+      [...catList.children].forEach(b=> b.classList.toggle('active', b.textContent===cat));
+      renderImageList();
+      showImage();
+    }
+
+    function renderImageList(){
+      imageList.innerHTML = '';
+      (DATA[currentCat]||[]).forEach((file, i)=>{
+        const a = document.createElement('a');
+        a.href = '#'; a.textContent = file; a.style.textDecoration='none'; a.style.color='#cbd5e1';
+        a.addEventListener('click', (e)=>{ e.preventDefault(); currentIndex = i; showImage(); });
+        imageList.appendChild(a);
+      });
+    }
+
+    function showImage(){
+      const file = (DATA[currentCat]||[])[currentIndex];
+      if(!file){ img.removeAttribute('src'); desc.textContent = '该类目暂无图片。'; return; }
+      const src = `${BASE}${currentCat}/${file}`;
+      img.src = src;
+      desc.textContent = `${currentCat} · ${file}`;
+      // 清空画布
+      ctx.clearRect(0,0,canvas.width, canvas.height);
+      // 等待图片尺寸就绪后适配画布
+      img.onload = fitCanvas;
+    }
+
+    function fitCanvas(){
+      // 让画布铺满 stage 同尺寸（与图片显示尺寸一致）
+      const rect = stage.getBoundingClientRect();
+      canvas.width = rect.width; canvas.height = rect.height;
+      // 清空（刷新后也会清空）
+      ctx.clearRect(0,0,canvas.width, canvas.height);
+    }
+
+    // ======== Drawing（临时） ========
+    let drawing = false; let last = null;
+    function startDraw(x,y){ drawing = true; last = {x,y}; }
+    function moveDraw(x,y){
+      if(!drawing) return;
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.strokeStyle = color.value; ctx.lineWidth = +size.value;
+      ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
+      last = {x,y};
+    }
+    function endDraw(){ drawing = false; last = null; }
+
+    // Mouse
+    canvas.addEventListener('mousedown', e=> startDraw(e.offsetX, e.offsetY));
+    canvas.addEventListener('mousemove', e=> moveDraw(e.offsetX, e.offsetY));
+    window.addEventListener('mouseup', endDraw);
+
+    // Touch（相对 canvas 定位）
+    canvas.addEventListener('touchstart', e=>{
+      const t = e.changedTouches[0];
+      const r = canvas.getBoundingClientRect();
+      startDraw(t.clientX - r.left, t.clientY - r.top);
+      e.preventDefault();
+    }, {passive:false});
+    canvas.addEventListener('touchmove', e=>{
+      const t = e.changedTouches[0]; const r = canvas.getBoundingClientRect();
+      moveDraw(t.clientX - r.left, t.clientY - r.top);
+      e.preventDefault();
+    }, {passive:false});
+    canvas.addEventListener('touchend', endDraw);
+
+    clearBtn.addEventListener('click', ()=> ctx.clearRect(0,0,canvas.width, canvas.height));
+    prevBtn.addEventListener('click', ()=>{ currentIndex = (currentIndex - 1 + DATA[currentCat].length) % DATA[currentCat].length; showImage(); });
+    nextBtn.addEventListener('click', ()=>{ currentIndex = (currentIndex + 1) % DATA[currentCat].length; showImage(); });
   </script>
 </body>
 </html>

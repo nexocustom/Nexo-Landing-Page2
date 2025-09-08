@@ -14,10 +14,11 @@
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans SC","PingFang SC",Arial,sans-serif;background:radial-gradient(1200px 800px at 70% -10%, #1f2937 0%, var(--bg) 60%);color:var(--text);display:flex;flex-direction:column;min-height:100vh}
     header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(15,23,42,.95),rgba(15,23,42,.75));backdrop-filter:blur(6px);border-bottom:1px solid #1f2937}
     .wrap{max-width:1000px;margin:0 auto;padding:16px 20px}
-    .brand{display:flex;align-items:center;gap:12px}
+    .brand{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}
     .logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:conic-gradient(from 180deg,#ffedd5,#fecaca,#fde68a,#ffedd5);color:#111;font-weight:900;letter-spacing:.5px;box-shadow:0 8px 24px rgba(255,107,53,.2)}
     .brand h1{font-size:1.15rem;margin:0}
     .brand small{display:block;color:var(--muted);font-weight:500}
+    .nav a{margin-left:16px;color:#ffd3c3;text-decoration:none;font-weight:700}
     .hero{padding:32px 20px 12px}
     .hero .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
     @media(max-width:800px){.hero .grid{grid-template-columns:1fr}}
@@ -50,16 +51,17 @@
 <body>
   <header>
     <div class="wrap brand">
-      <div class="logo">NX</div>
-      <div>
-        <h1>Nexo Custom Interior <small>— Seattle</small></h1>
-        <small>高端室内翻新 · 品质至上</small>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="logo">NX</div>
+        <div>
+          <h1>Nexo Custom Interior <small>— Seattle</small></h1>
+          <small>高端室内翻新 · 品质至上</small>
+        </div>
       </div>
+      <nav class="nav">
+        <a href="standards.html">施工标准</a>
+      </nav>
     </div>
-    <nav style="margin-top:8px">
-  <a href="standards.html" style="color:#ffd3c3;text-decoration:none;font-weight:700">施工标准</a>
-</nav>
-
   </header>
   <section class="wrap hero">
     <div class="grid">
@@ -69,7 +71,7 @@
         <p class="muted">A bunch of piggies doing remodel work in the Seattle area — and doing it well.</p>
         <div class="kbar">
           <kbd>Hi, 阿恒 👋</kbd>
-          <kbd>填写 2 次：中/晚</kbd>
+          <kbd>每天填写 2 次：中/晚</kbd>
           <kbd class="clock" id="clock">--:--</kbd>
         </div>
       </div>
@@ -87,7 +89,7 @@
         <div class="top">
           <div>
             <h3>中午日志</h3>
-            <div class="when">建议时间：11:30 — 14:00</div>
+            <div class="when">建议时间：11:30 — 13:30</div>
           </div>
           <div class="status"><span class="dot warn" id="dot-morning"></span><span id="state-morning">今日未完成</span></div>
         </div>
@@ -101,7 +103,7 @@
         <div class="top">
           <div>
             <h3>晚班日志</h3>
-            <div class="when">建议时间：17:00 — 18:00</div>
+            <div class="when">建议时间：17:00 — 21:00</div>
           </div>
           <div class="status"><span class="dot warn" id="dot-evening"></span><span id="state-evening">今日未完成</span></div>
         </div>

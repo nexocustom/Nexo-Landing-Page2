@@ -52,6 +52,9 @@
     .photo-desc{margin-top:6px;font-size:.9rem;color:#facc15}
     footer{margin-top:auto}
     footer .wrap{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;color:#94a3b8}
+      /* 动态对比度样式：深色底/浅色字 与 浅色底/深色字 */
+    .photo-tag.dark{ color:#fff; background:rgba(15,23,42,.45); text-shadow: 0 1px 2px rgba(0,0,0,.35); }
+    .photo-tag.light{ color:#111; background:rgba(255,255,255,.55); text-shadow: none; }
   </style>
 </head>
 <body>
@@ -210,7 +213,7 @@
       // 清空画布
       ctx.clearRect(0,0,canvas.width, canvas.height);
       // 等待图片尺寸就绪后适配画布
-      img.onload = ()=>{ fitCanvas(); };
+      img.onload = ()=>{ fitCanvas(); applyTagContrast(); };
     }
 
     function fitCanvas(){
@@ -269,6 +272,32 @@
     tagPos.addEventListener('change', applyTagStyle);
     tagSize.addEventListener('input', applyTagStyle);
     applyTagStyle();
+    // —— 根据图片整体色调，自动选择描述的对比色 ——
+    function analyzeToneFromImage(image){
+      try{
+        const off = document.createElement('canvas');
+        const w = 64, h = 64;
+        off.width = w; off.height = h;
+        const c2 = off.getContext('2d');
+        c2.drawImage(image, 0, 0, w, h);
+        const data = c2.getImageData(0,0,w,h).data;
+        let sum = 0; // 平均亮度
+        for(let i=0;i<data.length;i+=4){
+          const r = data[i], g = data[i+1], b = data[i+2];
+          // Rec. 709 加权亮度
+          sum += 0.2126*r + 0.7152*g + 0.0722*b;
+        }
+        return sum / (w*h);
+      }catch(e){
+        return 128; // 出错时给中性值
+      }
+    }
+    function applyTagContrast(){
+      const lum = analyzeToneFromImage(img);
+      const isBright = lum >= 170; // 阈值可微调 160-180
+      photoTag.classList.remove('light','dark');
+      photoTag.classList.add(isBright ? 'light' : 'dark');
+    }
   </script>
 </body>
 </html>

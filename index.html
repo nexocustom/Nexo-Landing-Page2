@@ -52,7 +52,10 @@
   <header>
     <div class="wrap brand">
       <div style="display:flex;align-items:center;gap:12px">
-        <div class="logo">NX</div>
+        <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none">
+  <img src="assets/branding/nexo-logo-original.png" alt="Nexo Custom Interior"
+       style="height:40px;width:auto;display:block;filter:drop-shadow(0 8px 24px rgba(255,107,53,.2));">
+</a>
         <div>
           <h1>Nexo Custom Interior <small>— Seattle</small></h1>
           <small>高端室内翻新 · 品质至上</small>
@@ -85,6 +88,25 @@
       </div>
     </div>
     <div class="tiles">
+      <div class="card tile" id="tile-weekly">
+  <div class="top">
+    <div>
+      <h3>周一周报</h3>
+      <div class="when">建议时间：每周一</div>
+    </div>
+    <div class="status">
+      <span class="dot warn" id="dot-weekly"></span>
+      <span id="state-weekly">本周未完成</span>
+    </div>
+  </div>
+  <div class="btnrow">
+    <a class="btn brand"
+       href="https://docs.google.com/forms/d/e/1FAIpQLSfrQKN4qx-M6usktqd_NlsYXnmA6ZX4YSNEzyxiwDS--GBIQQ/viewform?usp=header"
+       target="_blank">打开表单</a>
+    <button class="btn ghost" id="mark-weekly">标记完成</button>
+  </div>
+  <div class="muted" id="time-weekly"></div>
+</div>
       <div class="card tile" id="tile-morning">
         <div class="top">
           <div>
@@ -122,20 +144,136 @@
     </div>
   </footer>
   <script>
-    const $=(s)=>document.querySelector(s);
-    const todayKey=()=>new Date().toISOString().slice(0,10);
-    const k=(slot)=>`log:${todayKey()}:${slot}`;
-    function mark(slot){const now=new Date();const stamp=now.toLocaleString();localStorage.setItem(k(slot),stamp);render();}
-    function isDone(slot){return !!localStorage.getItem(k(slot));}
-    function resetIfNewDay(){const last=localStorage.getItem('log:lastDay');const t=todayKey();if(last!==t){Object.keys(localStorage).forEach(key=>{if(key.startsWith('log:')&&!key.includes(t))localStorage.removeItem(key)});localStorage.setItem('log:lastDay',t);}}
-    function setState(slot,done){const dot=$(`#dot-${slot}`);const label=$(`#state-${slot}`);const time=$(`#time-${slot}`);const stamp=localStorage.getItem(k(slot));if(done){dot.classList.remove('warn','err');dot.classList.add('ok');label.textContent='今日已完成';time.textContent=stamp?`完成时间：${stamp}`:'';}else{dot.classList.remove('ok','err');dot.classList.add('warn');label.textContent='今日未完成';time.textContent='';}}
-    function render(){setState('morning',isDone('morning'));setState('evening',isDone('evening'));}
-    function tick(){const now=new Date();$('#clock').textContent=now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});}
-    document.addEventListener('DOMContentLoaded',()=>{
-      $('#year').textContent=new Date().getFullYear();resetIfNewDay();render();tick();setInterval(tick,1000);
-      $('#mark-morning').addEventListener('click',()=>mark('morning'));
-      $('#mark-evening').addEventListener('click',()=>mark('evening'));
-    });
+    <script>
+  // 便捷选择器
+  const $ = (s) => document.querySelector(s);
+
+  // ====== 每日键（中/晚） ======
+  const todayKey = () => new Date().toISOString().slice(0,10);
+  const k = (slot) => `log:${todayKey()}:${slot}`;
+
+  // ====== 每周键（周一周报）—— ISO 周：周一为一周开始 ======
+  function isoWeekKey(date = new Date()){
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const day = d.getUTCDay() || 7;        // 周一=1 ... 周日=7
+    d.setUTCDate(d.getUTCDate() + 4 - day);// 移动到本周周四，避免边界问题
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    const week = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    const yr = d.getUTCFullYear();
+    return `${yr}-W${String(week).padStart(2,'0')}`;
+  }
+  const kWeekly = () => `logw:${isoWeekKey()}:weekly`;
+
+  // ====== 标记逻辑（通用） ======
+  function mark(slot){
+    const now = new Date();
+    const stamp = now.toLocaleString();
+    localStorage.setItem(k(slot), stamp);
+    render();
+  }
+  function markWeekly(){
+    const now = new Date();
+    const stamp = now.toLocaleString();
+    localStorage.setItem(kWeekly(), stamp);
+    render();
+  }
+
+  function isDone(slot){ return !!localStorage.getItem(k(slot)); }
+  function isWeeklyDone(){ return !!localStorage.getItem(kWeekly()); }
+
+  // ====== 重置（每日 & 每周） ======
+  function resetIfNewDay(){
+    const last = localStorage.getItem('log:lastDay');
+    const t = todayKey();
+    if(last !== t){
+      // 清理旧的“日”记录
+      Object.keys(localStorage).forEach(key=>{
+        if(key.startsWith('log:') && !key.includes(t)) localStorage.removeItem(key);
+      });
+      localStorage.setItem('log:lastDay', t);
+    }
+  }
+  function resetIfNewWeek(){
+    const last = localStorage.getItem('logw:lastWeek');
+    const wk = isoWeekKey();
+    if(last !== wk){
+      // 清理旧的“周”记录
+      Object.keys(localStorage).forEach(key=>{
+        if(key.startsWith('logw:') && !key.includes(wk)) localStorage.removeItem(key);
+      });
+      localStorage.setItem('logw:lastWeek', wk);
+    }
+  }
+
+  // ====== UI 状态渲染 ======
+  function setState(slot, done){
+    const dot  = $(`#dot-${slot}`);
+    const label= $(`#state-${slot}`);
+    const time = $(`#time-${slot}`);
+    const stamp= localStorage.getItem(k(slot));
+    if(done){
+      dot.classList.remove('warn','err');
+      dot.classList.add('ok');
+      label.textContent = '今日已完成';
+      time.textContent = stamp ? `完成时间：${stamp}` : '';
+    }else{
+      dot.classList.remove('ok','err');
+      dot.classList.add('warn');
+      label.textContent = '今日未完成';
+      time.textContent = '';
+    }
+  }
+
+  function setWeeklyState(done){
+    const dot  = $('#dot-weekly');
+    const label= $('#state-weekly');
+    const time = $('#time-weekly');
+    const stamp= localStorage.getItem(kWeekly());
+    if(!dot || !label) return; // 如果你还没插入周报卡片，安全退出
+    if(done){
+      dot.classList.remove('warn','err');
+      dot.classList.add('ok');
+      label.textContent = '本周已完成';
+      time.textContent = stamp ? `完成时间：${stamp}` : '';
+    }else{
+      dot.classList.remove('ok','err');
+      dot.classList.add('warn');
+      label.textContent = '本周未完成';
+      time.textContent = '';
+    }
+  }
+
+  function render(){
+    setState('morning', isDone('morning'));
+    setState('evening', isDone('evening'));
+    setWeeklyState(isWeeklyDone());
+  }
+
+  // ====== 时钟 ======
+  function tick(){
+    const now = new Date();
+    const el = $('#clock');
+    if(el) el.textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  }
+
+  // ====== 启动 ======
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const y = $('#year'); if(y) y.textContent = new Date().getFullYear();
+
+    resetIfNewDay();
+    resetIfNewWeek();
+
+    render();
+    tick();
+    setInterval(tick, 1000);
+
+    // 事件绑定（若元素存在）
+    const mm = $('#mark-morning'); if(mm) mm.addEventListener('click', ()=>mark('morning'));
+    const me = $('#mark-evening'); if(me) me.addEventListener('click', ()=>mark('evening'));
+    const mw = $('#mark-weekly');  if(mw) mw.addEventListener('click', markWeekly);
+  });
+</script>
+
   </script>
 </body>
 </html>

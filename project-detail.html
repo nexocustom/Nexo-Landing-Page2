@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nexo — Project Detail</title>
+  <meta name="description" content="Nexo Custom Interior 项目详情页。">
+  <style>
+    :root{ --bg:#0f172a; --ink:#e5e7eb; --muted:#94a3b8; --line:rgba(255,255,255,.10); --brand:#ff6b35; --gold:#c5a572;}
+    *{box-sizing:border-box} html,body{margin:0} body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans SC","PingFang SC",Arial,sans-serif;color:var(--ink);background:radial-gradient(1200px 800px at 70% -10%, #1f2937 0%, var(--bg) 60%);}
+    a{color:#ffd3c3; text-decoration:none}
+    header{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,rgba(15,23,42,.95),rgba(15,23,42,.78));backdrop-filter:blur(6px);border-bottom:1px solid #1f2937}
+    .wrap{max-width:1100px;margin:0 auto;padding:16px 20px}
+    .brandbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:conic-gradient(from 180deg,#ffedd5,#fecaca,#fde68a,#ffedd5);color:#111;font-weight:900;letter-spacing:.5px;box-shadow:0 8px 24px rgba(255,107,53,.2)}
+    .titleblock h1{margin:0;font-size:1.15rem} .titleblock small{display:block;color:var(--muted)}
+    nav a{margin-left:16px;color:#ffd3c3;font-weight:700}
+
+    .hero{position:relative}
+    .hero img{width:100%;height:auto;display:block}
+    .hero .gold-frame{position:absolute;inset:20px;border:1.5px solid rgba(197,165,114,.7);pointer-events:none;border-radius:12px}
+    .head{max-width:1100px;margin:20px auto 0;padding:0 20px}
+    .h1{margin:10px 0 4px;font-weight:800;font-size:clamp(26px,3.8vw,40px)}
+    .meta{color:var(--muted)}
+    .grid{max-width:1100px;margin:22px auto;padding:0 20px;display:grid;grid-template-columns:2fr 1fr;gap:22px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+    .prose{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));border:1px solid var(--line);border-radius:16px;padding:18px}
+    .aside{display:grid;gap:14px}
+    .box{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));border:1px solid var(--line);border-radius:16px;padding:16px}
+    .box h3{margin:0 0 8px}
+    .list{margin:0;padding-left:18px;color:#cbd5e1}
+    .gallery{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+    .gallery img{width:100%;border-radius:10px;border:1px solid var(--line)}
+    .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .btn{appearance:none;border:none;cursor:pointer;font-weight:700;padding:12px 16px;border-radius:12px;color:#111;background:#fff;box-shadow:0 8px 20px rgba(255,255,255,.08);outline:2px solid transparent;outline-offset:2px;transition:.2s}
+    .btn:focus{outline-color:rgba(255,107,53,.35)}
+    footer{border-top:1px solid var(--line);margin-top:40px}
+    footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#94a3b8}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap brandbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="logo">NX</div>
+        <div class="titleblock">
+          <h1>Nexo Custom Interior <small>— Seattle</small></h1>
+          <small>高端室内翻新 · 品质至上</small>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">工作日志</a>
+        <a href="standards.html" style="margin-left:16px">施工标准</a>
+        <a href="projects.html" style="margin-left:16px">Projects</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Cover -->
+  <section class="hero">
+    <!-- 替换为该项目的封面图 -->
+    <img src="assets/projects/covers/nexo_cover_mercer_modern_kitchen.png" alt="Project Cover">
+    <div class="gold-frame"></div>
+  </section>
+
+  <!-- Title & Meta -->
+  <div class="head">
+    <h2 class="h1">Mercer Island · Modern Kitchen</h2>
+    <div class="meta">Custom cabinetry · Quartz · Smart lighting · 2024 · Seattle</div>
+  </div>
+
+  <!-- Content -->
+  <main class="grid">
+    <!-- Left: narrative & gallery -->
+    <article class="prose">
+      <p>我们以克制与比例推进厨房改造：选择耐久的材质与可维护的构造节点，以隐藏式技术系统（照明/通风/电器）提升使用体验。</p>
+      <div class="gallery">
+        <img src="assets/projects/kitchen_modern_01.jpg" alt="">
+        <img src="assets/projects/kitchen_modern_02.jpg" alt="">
+        <img src="assets/projects/kitchen_modern_03.jpg" alt="">
+        <img src="assets/projects/kitchen_modern_04.jpg" alt="">
+      </div>
+      <div class="cta">
+        <a class="btn" href="mailto:contact@nexoci.com?subject=Nexo Project — Modern Kitchen">Get a Quote</a>
+        <a class="btn" href="projects.html">Back to Projects</a>
+      </div>
+    </article>
+
+    <!-- Right: specs -->
+    <aside class="aside">
+      <div class="box">
+        <h3>Scope</h3>
+        <ul class="list">
+          <li>Cabinetry: inset doors, soft-close</li>
+          <li>Countertops: quartz / marble island</li>
+          <li>Electrical & smart lighting</li>
+          <li>Plumbing fixtures & venting</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>Materials</h3>
+        <ul class="list">
+          <li>Brass pulls · Satin</li>
+          <li>Herringbone oak floor</li>
+          <li>Matte wall paint</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>Team</h3>
+        <ul class="list">
+          <li>Nexo Custom Interior</li>
+          <li>GC · Electrical · Plumbing</li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <small>© <span id="year"></span> Nexo Custom Interior. All rights reserved.</small>
+      <small>Seattle, WA · (206) 681-0020 · contact@nexoci.com</small>
+    </div>
+  </footer>
+  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+</body>
+</html>

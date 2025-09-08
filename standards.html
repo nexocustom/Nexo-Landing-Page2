@@ -107,7 +107,7 @@
         <div class="stage" id="stage">
           <img id="photo" alt="标准示例" src=""/>
           <canvas id="sketch"></canvas>
-          <div class="photo-tag" id="photoTag"></div>
+          <div class="photo-tag dark" id="photoTag"></div>
         </div>
         <div class="desc" id="desc">选择左侧类目与图片进行查看。可在图片上临时绘画，刷新后自动清空。
           <div class="photo-desc" id="photoDesc"></div>
@@ -210,6 +210,11 @@
       img.src = src;
       photoDesc.textContent = item.desc || '';
       photoTag.textContent = item.desc || '';
+      // 保障首屏可见：不等图片onload也先给出样式
+      if (typeof applyTagStyle === 'function') { applyTagStyle(); }
+      if (typeof applyTagContrast === 'function') {
+        requestAnimationFrame(()=>applyTagContrast());
+      }
       // 清空画布
       ctx.clearRect(0,0,canvas.width, canvas.height);
       // 等待图片尺寸就绪后适配画布

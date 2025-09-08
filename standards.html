@@ -55,6 +55,11 @@
       /* 动态对比度样式：深色底/浅色字 与 浅色底/深色字 */
     .photo-tag.dark{ color:#fff; background:rgba(15,23,42,.45); text-shadow: 0 1px 2px rgba(0,0,0,.35); }
     .photo-tag.light{ color:#111; background:rgba(255,255,255,.55); text-shadow: none; }
+      /* 定位类（更稳妥） */
+    .photo-tag.pos-lt{left:12px;top:12px;right:auto;bottom:auto}
+    .photo-tag.pos-lb{left:12px;bottom:12px;right:auto;top:auto}
+    .photo-tag.pos-rt{right:12px;top:12px;left:auto;bottom:auto}
+    .photo-tag.pos-rb{right:12px;bottom:12px;left:auto;top:auto}
   </style>
 </head>
 <body>
@@ -210,10 +215,11 @@
       img.src = src;
       photoDesc.textContent = item.desc || '';
       photoTag.textContent = item.desc || '';
-      // 保障首屏可见：不等图片onload也先给出样式
+      // 首屏即应用定位与对比
       if (typeof applyTagStyle === 'function') { applyTagStyle(); }
       if (typeof applyTagContrast === 'function') {
         requestAnimationFrame(()=>applyTagContrast());
+      }
       }
       // 清空画布
       ctx.clearRect(0,0,canvas.width, canvas.height);
@@ -266,9 +272,24 @@
     // 描述块：位置与字体
     function applyTagStyle(){
       const pos = tagPos.value;
-      photoTag.style.left = photoTag.style.right = photoTag.style.top = photoTag.style.bottom = 'auto';
-      const gap = '12px';
-      if(pos==='lb'){ photoTag.style.left=gap; photoTag.style.bottom=gap; }
+      // 先清空内联定位，避免与类冲突
+      photoTag.style.left = photoTag.style.right = photoTag.style.top = photoTag.style.bottom = '';
+      // 切换定位类
+      photoTag.classList.remove('pos-lt','pos-lb','pos-rt','pos-rb');
+      const map = { lt:'pos-lt', lb:'pos-lb', rt:'pos-rt', rb:'pos-rb' };
+      photoTag.classList.add(map[pos] || 'pos-lt');
+      // 字体大小
+      photoTag.style.fontSize = tagSize.value + 'rem';
+      // 确保可见
+      photoTag.style.visibility = 'visible';
+    }
+      if(pos==='lt'){ photoTag.style.left=gap; photoTag.style.top=gap; }
+      if(pos==='rb'){ photoTag.style.right=gap; photoTag.style.bottom=gap; }
+      if(pos==='rt'){ photoTag.style.right=gap; photoTag.style.top=gap; }
+      photoTag.style.fontSize = tagSize.value + 'rem';
+      // 确保显示
+      photoTag.style.display = 'block';
+    }
       if(pos==='lt'){ photoTag.style.left=gap; photoTag.style.top=gap; }
       if(pos==='rb'){ photoTag.style.right=gap; photoTag.style.bottom=gap; }
       if(pos==='rt'){ photoTag.style.right=gap; photoTag.style.top=gap; }

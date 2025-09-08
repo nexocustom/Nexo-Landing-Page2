@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nexo Custom Interior — 施工标准（Clean）</title>
-  <meta name="description" content="Nexo 施工标准图库：类目/图片切换、覆盖描述、手机临时画笔（刷新清空）、描述位置与字体可调、自动对比色。" />
+  <title>Nexo Custom Interior — 施工标准</title>
+  <meta name="description" content="Nexo Custom Interior 施工标准图文库，支持手机临时标注（刷新后清除），并可调整描述位置与字体大小。" />
   <style>
-    :root{ --bg:#0f172a; --panel:#0b1222; --muted:#94a3b8; --text:#e5e7eb; --brand:#ff6b35; }
+    :root{
+      --bg:#0f172a; --panel:#0b1222; --card:#111827; --muted:#94a3b8; --text:#e5e7eb; --brand:#ff6b35;
+    }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans SC","PingFang SC",Arial,sans-serif;background:#0f172a;color:#e5e7eb;min-height:100vh;display:flex;flex-direction:column}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans SC","PingFang SC",Arial,sans-serif;background:radial-gradient(1200px 800px at 70% -10%, #1f2937 0%, var(--bg) 60%);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
     a{color:#ffd3c3}
     header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(15,23,42,.95),rgba(15,23,42,.75));backdrop-filter: blur(6px);border-bottom:1px solid #1f2937}
     .wrap{max-width:1100px;margin:0 auto;padding:14px 18px}
@@ -23,6 +25,7 @@
     @media (max-width: 900px){.grid{grid-template-columns:1fr}}
 
     .sidebar{display:flex;flex-direction:column;gap:12px}
+    .sidebar h3{margin:0 0 6px}
     .cats{display:grid;gap:8px}
     .cats button{background:#1e293b;color:#e5e7eb;border:1px solid rgba(255,255,255,.08);padding:10px 12px;text-align:left;border-radius:10px;cursor:pointer}
     .cats button.active{outline:2px solid rgba(255,107,53,.35);background:#243244}
@@ -34,25 +37,29 @@
     .toolbar label{display:flex;align-items:center;gap:6px;background:#0b1222;border:1px solid rgba(255,255,255,.15);padding:8px 10px;border-radius:8px}
     .toolbar select,.toolbar input[type="range"]{accent-color:#ff6b35}
 
-    .stage{position:relative;background:#0b1222;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;min-height:320px;isolation:isolate}
+    .stage{position:relative;background:#0b1222;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;min-height:300px;isolation:isolate}
     .stage img{display:block;max-width:100%;height:auto;margin:0 auto}
-    #sketch{position:absolute;inset:0;touch-action:none;z-index:2}
-
-    /* 覆盖描述块（默认可见，左上） */
-    .tag{position:absolute;z-index:3;pointer-events:none;max-width:76%;left:12px;top:12px;
-      font-size:1.2rem;line-height:1.35;font-weight:800;color:#fff;
-      background:rgba(15,23,42,.45);padding:10px 12px;border-radius:10px;
-      backdrop-filter: blur(3px);box-shadow:0 6px 16px rgba(0,0,0,.25);text-shadow:0 1px 2px rgba(0,0,0,.35)}
-    .tag.light{color:#111;background:rgba(255,255,255,.55);text-shadow:none}
-    /* 位置类 */
-    .pos-lt{left:12px;top:12px;right:auto;bottom:auto}
-    .pos-lb{left:12px;bottom:12px;right:auto;top:auto}
-    .pos-rt{right:12px;top:12px;left:auto;bottom:auto}
-    .pos-rb{right:12px;bottom:12px;left:auto;top:auto}
+    canvas#sketch{position:absolute;inset:0;touch-action:none;z-index:2}
+    .photo-tag{position:absolute;left:12px;bottom:12px;z-index:3;pointer-events:none;max-width:72%;
+      font-size:1.1rem;line-height:1.35;font-weight:800;color:#fff;
+      background:rgba(15,23,42,.45);
+      padding:10px 12px;border-radius:10px;
+      backdrop-filter: blur(3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,.25);
+      text-shadow: 0 1px 2px rgba(0,0,0,.35)}
 
     .desc{background:#0b1222;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;color:#cbd5e1;min-height:50px}
+    .photo-desc{margin-top:6px;font-size:.9rem;color:#facc15}
     footer{margin-top:auto}
     footer .wrap{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;color:#94a3b8}
+      /* 动态对比度样式：深色底/浅色字 与 浅色底/深色字 */
+    .photo-tag.dark{ color:#fff; background:rgba(15,23,42,.45); text-shadow: 0 1px 2px rgba(0,0,0,.35); }
+    .photo-tag.light{ color:#111; background:rgba(255,255,255,.55); text-shadow: none; }
+      /* 定位类（更稳妥） */
+    .photo-tag.pos-lt{left:12px;top:12px;right:auto;bottom:auto}
+    .photo-tag.pos-lb{left:12px;bottom:12px;right:auto;top:auto}
+    .photo-tag.pos-rt{right:12px;top:12px;left:auto;bottom:auto}
+    .photo-tag.pos-rb{right:12px;bottom:12px;left:auto;top:auto}
   </style>
 </head>
 <body>
@@ -60,12 +67,15 @@
     <div class="wrap brand">
       <div class="logo">NX</div>
       <h1>Nexo Custom Interior — 施工标准</h1>
-      <nav class="nav"><a href="index.html">返回工作日志</a></nav>
+      <nav class="nav">
+        <a href="index.html">返回工作日志</a>
+      </nav>
     </div>
   </header>
 
   <main class="wrap" style="padding:18px 18px 28px">
     <div class="grid">
+      <!-- Sidebar: categories and image pickers -->
       <aside class="sidebar panel">
         <h3>类目</h3>
         <div class="cats" id="catList"></div>
@@ -77,35 +87,36 @@
           <strong>如何上传照片？</strong>
           <ol style="margin:8px 0 0 18px;color:#cbd5e1">
             <li>把图片放到 <code>/assets/standards/类目名/</code> 目录（如 <code>assets/standards/踢脚线标准/</code>）。</li>
-            <li>在下方 <code>DATA</code> 里添加文件名与简短描述。</li>
+            <li>在下面的 <code>DATA</code> 配置里添加文件名与描述（示例已给）。</li>
             <li>保存并刷新本页面即可看到新图片。</li>
           </ol>
         </div>
       </aside>
 
+      <!-- Viewer -->
       <section class="viewer">
         <div class="toolbar">
           <button class="btn" id="prevBtn">上一张</button>
           <button class="btn" id="nextBtn">下一张</button>
           <button class="btn ghost" id="clearDraw">清除临时标注</button>
-          <label>笔粗细<input id="penSize" type="range" min="2" max="20" value="6"></label>
-          <label>笔颜色<input id="penColor" type="color" value="#ff6b35"></label>
+          <label>笔粗细<input id="size" type="range" min="2" max="20" value="6"></label>
+          <label>笔颜色<input id="color" type="color" value="#ff6b35"></label>
           <label>描述位置<select id="tagPos">
-            <option value="lt" selected>左上</option>
-            <option value="lb">左下</option>
-            <option value="rt">右上</option>
+            <option value=\"lb\">左下</option>
+            <option value=\"lt\" selected>左上</option>
             <option value="rb">右下</option>
+            <option value="rt">右上</option>
           </select></label>
-          <label>描述字体<input id="tagSize" type="range" min="0.9" max="1.8" step="0.05" value="1.2"></label>
+          <label>描述字体<input id="tagSize" type="range" min="0.9" max="1.6" step="0.05" value="1.1"></label>
         </div>
-
         <div class="stage" id="stage">
           <img id="photo" alt="标准示例" src=""/>
           <canvas id="sketch"></canvas>
-          <div class="tag pos-lt" id="tag"></div>
+          <div class="photo-tag dark" id="photoTag"></div>
         </div>
-
-        <div class="desc" id="info">选择左侧类目与图片进行查看。可在图片上临时绘画，刷新后自动清空。</div>
+        <div class="desc" id="desc">选择左侧类目与图片进行查看。可在图片上临时绘画，刷新后自动清空。
+          <div class="photo-desc" id="photoDesc"></div>
+        </div>
       </section>
     </div>
   </main>
@@ -118,150 +129,205 @@
   </footer>
 
   <script>
-    // ======== 配置（替换为你的文件名与描述） ========
+    // ======== DATA（替换为你的真实文件名和描述；保持目录结构） ========
+    // 每个类目对应一个图片列表和描述；文件放在 /assets/standards/{类目}/ 目录下
     const DATA = {
       "踢脚线标准": [
         {file:"baseboard_01.jpg", desc:"踢脚线安装平直，无明显缝隙"},
-        {file:"baseboard_02.jpg", desc:"转角拼接紧密，打胶顺滑"}
+        {file:"baseboard_02.jpg", desc:"转角处拼接紧密，打胶顺滑"}
       ],
       "门框标准": [
         {file:"doorframe_01.jpg", desc:"门框垂直度良好，表面无破损"}
       ],
       "打胶标准": [
         {file:"caulk_01.jpg", desc:"胶线均匀，边缘整齐"},
-        {file:"caulk_02.jpg", desc:"转角饱满无断点"}
+        {file:"caulk_02.jpg", desc:"转角处饱满无断点"}
       ],
       "补洞标准": [
         {file:"patch_01.jpg", desc:"补洞平整，与周围墙面颜色一致"}
+      ],
+      "油漆标准": [
+        {file:"paint_01.jpg", desc:"涂刷均匀，无明显刷痕"}
+        {file:"paint_02.jpg", desc:"颜色一致，边缘整齐"}
       ],
       "平整标准": [
         {file:"flatness_01.jpg", desc:"墙面平整，手感光滑无起伏"}
       ]
     };
-    const BASE = "assets/standards/";
+    const BASE = "assets/standards/"; // 根目录
 
     // ======== DOM refs ========
     const catList = document.getElementById('catList');
     const imageList = document.getElementById('imageList');
     const img = document.getElementById('photo');
-    const tag = document.getElementById('tag');
+    const desc = document.getElementById('desc');
+    const photoDesc = document.getElementById('photoDesc');
+    const photoTag = document.getElementById('photoTag');
     const stage = document.getElementById('stage');
-    const info = document.getElementById('info');
-    const cvs = document.getElementById('sketch');
-    const ctx = cvs.getContext('2d');
+    const canvas = document.getElementById('sketch');
+    const ctx = canvas.getContext('2d');
+
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const clearBtn = document.getElementById('clearDraw');
-    const penSize = document.getElementById('penSize');
-    const penColor = document.getElementById('penColor');
+    const size = document.getElementById('size');
+    const color = document.getElementById('color');
     const tagPos = document.getElementById('tagPos');
     const tagSize = document.getElementById('tagSize');
 
     let currentCat = Object.keys(DATA)[0] || null;
     let currentIndex = 0;
 
-    // ======== 初始化 ========
+    // ======== Init ========
     document.getElementById('year').textContent = new Date().getFullYear();
     buildCats();
     if(currentCat){ loadCat(currentCat); }
     window.addEventListener('resize', fitCanvas);
 
-    // 类目 & 列表
     function buildCats(){
       catList.innerHTML = '';
       Object.keys(DATA).forEach(cat => {
-        const b = document.createElement('button');
-        b.textContent = cat; b.addEventListener('click', ()=> loadCat(cat));
-        catList.appendChild(b);
+        const btn = document.createElement('button');
+        btn.textContent = cat;
+        btn.className = 'cat';
+        btn.addEventListener('click', ()=> loadCat(cat));
+        catList.appendChild(btn);
       });
     }
+
     function loadCat(cat){
       currentCat = cat; currentIndex = 0;
       [...catList.children].forEach(b=> b.classList.toggle('active', b.textContent===cat));
       renderImageList();
       showImage();
     }
+
     function renderImageList(){
       imageList.innerHTML = '';
-      (DATA[currentCat]||[]).forEach((it,i)=>{
-        const a = document.createElement('a'); a.href='#'; a.textContent = it.file; a.style.color='#cbd5e1';
-        a.onclick = (e)=>{ e.preventDefault(); currentIndex=i; showImage(); };
+      (DATA[currentCat]||[]).forEach((item, i)=>{
+        const a = document.createElement('a');
+        a.href = '#'; a.textContent = item.file; a.style.textDecoration='none'; a.style.color='#cbd5e1';
+        a.addEventListener('click', (e)=>{ e.preventDefault(); currentIndex = i; showImage(); });
         imageList.appendChild(a);
       });
     }
 
-    // 渲染图片
     function showImage(){
       const item = (DATA[currentCat]||[])[currentIndex];
-      if(!item){ img.removeAttribute('src'); tag.textContent=''; info.textContent='该类目暂无图片。'; return; }
-      img.crossOrigin = 'anonymous'; // 若同源可读像素，跨域时自动降级
-      img.src = `${BASE}${currentCat}/${item.file}`;
-      tag.textContent = item.desc || '';
-      info.textContent = `${currentCat} · ${item.file}`;
-      // 立即应用位置/字体（不等图片加载）
-      applyTagStyle();
-      // 清空画布
-      ctx.clearRect(0,0,cvs.width,cvs.height);
-      // 加载完成后适配尺寸与对比色
-      if (img.complete) { onImageReady(); }
-      else {
-        img.onload = onImageReady;
-        img.onerror = ()=>{ fitCanvas(); applyTagToneFallback(); };
+      if(!item){ img.removeAttribute('src'); photoDesc.textContent = ''; photoTag.textContent=''; return; }
+      const src = `${BASE}${currentCat}/${item.file}`;
+      img.src = src;
+      photoDesc.textContent = item.desc || '';
+      photoTag.textContent = item.desc || '';
+      // 首屏即应用定位与对比
+      if (typeof applyTagStyle === 'function') { applyTagStyle(); }
+      if (typeof applyTagContrast === 'function') {
+        requestAnimationFrame(()=>applyTagContrast());
       }
+      }
+      // 清空画布
+      ctx.clearRect(0,0,canvas.width, canvas.height);
+      // 等待图片尺寸就绪后适配画布
+      img.onload = ()=>{ fitCanvas(); applyTagContrast(); };
     }
-    function onImageReady(){ fitCanvas(); applyTagContrast(); }
 
     function fitCanvas(){
-      const r = stage.getBoundingClientRect();
-      cvs.width = r.width; cvs.height = r.height;
-      ctx.clearRect(0,0,cvs.width,cvs.height);
+      const rect = stage.getBoundingClientRect();
+      canvas.width = rect.width; canvas.height = rect.height;
+      ctx.clearRect(0,0,canvas.width, canvas.height);
     }
 
-    // —— 覆盖描述：位置/字体 ——
+    // ======== Drawing（临时） ========
+    let drawing = false; let last = null;
+    function startDraw(x,y){ drawing = true; last = {x,y}; }
+    function moveDraw(x,y){
+      if(!drawing) return;
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.strokeStyle = color.value; ctx.lineWidth = +size.value;
+      ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
+      last = {x,y};
+    }
+    function endDraw(){ drawing = false; last = null; }
+
+    // Mouse
+    canvas.addEventListener('mousedown', e=> startDraw(e.offsetX, e.offsetY));
+    canvas.addEventListener('mousemove', e=> moveDraw(e.offsetX, e.offsetY));
+    window.addEventListener('mouseup', endDraw);
+
+    // Touch
+    canvas.addEventListener('touchstart', e=>{
+      const t = e.changedTouches[0];
+      const r = canvas.getBoundingClientRect();
+      startDraw(t.clientX - r.left, t.clientY - r.top);
+      e.preventDefault();
+    }, {passive:false});
+    canvas.addEventListener('touchmove', e=>{
+      const t = e.changedTouches[0]; const r = canvas.getBoundingClientRect();
+      moveDraw(t.clientX - r.left, t.clientY - r.top);
+      e.preventDefault();
+    }, {passive:false});
+    canvas.addEventListener('touchend', endDraw);
+
+    // 工具：清除、上下张
+    clearBtn.addEventListener('click', ()=> ctx.clearRect(0,0,canvas.width, canvas.height));
+    prevBtn.addEventListener('click', ()=>{ currentIndex = (currentIndex - 1 + DATA[currentCat].length) % DATA[currentCat].length; showImage(); });
+    nextBtn.addEventListener('click', ()=>{ currentIndex = (currentIndex + 1) % DATA[currentCat].length; showImage(); });
+
+    // 描述块：位置与字体
     function applyTagStyle(){
-      tag.classList.remove('pos-lt','pos-lb','pos-rt','pos-rb');
+      const pos = tagPos.value;
+      // 先清空内联定位，避免与类冲突
+      photoTag.style.left = photoTag.style.right = photoTag.style.top = photoTag.style.bottom = '';
+      // 切换定位类
+      photoTag.classList.remove('pos-lt','pos-lb','pos-rt','pos-rb');
       const map = { lt:'pos-lt', lb:'pos-lb', rt:'pos-rt', rb:'pos-rb' };
-      tag.classList.add(map[tagPos.value] || 'pos-lt');
-      tag.style.fontSize = tagSize.value + 'rem';
-      tag.style.visibility = 'visible';
+      photoTag.classList.add(map[pos] || 'pos-lt');
+      // 字体大小
+      photoTag.style.fontSize = tagSize.value + 'rem';
+      // 确保可见
+      photoTag.style.visibility = 'visible';
     }
-    tagPos.onchange = applyTagStyle; tagSize.oninput = applyTagStyle;
-
-    // —— 自动对比色（亮度阈值）——
-    function applyTagContrast(){
-      const lum = averageLuma(img);
-      tag.classList.toggle('light', lum >= 170); // 亮图→深色字
-      if(lum >= 170){ tag.classList.remove('dark'); } else { tag.classList.add('dark'); }
+      if(pos==='lt'){ photoTag.style.left=gap; photoTag.style.top=gap; }
+      if(pos==='rb'){ photoTag.style.right=gap; photoTag.style.bottom=gap; }
+      if(pos==='rt'){ photoTag.style.right=gap; photoTag.style.top=gap; }
+      photoTag.style.fontSize = tagSize.value + 'rem';
+      // 确保显示
+      photoTag.style.display = 'block';
     }
-    function applyTagToneFallback(){
-      // 失败时（跨域或异常）保留默认深底浅字
-      tag.classList.remove('light'); tag.classList.add('dark');
+      if(pos==='lt'){ photoTag.style.left=gap; photoTag.style.top=gap; }
+      if(pos==='rb'){ photoTag.style.right=gap; photoTag.style.bottom=gap; }
+      if(pos==='rt'){ photoTag.style.right=gap; photoTag.style.top=gap; }
+      photoTag.style.fontSize = tagSize.value + 'rem';
     }
-    function averageLuma(image){
+    tagPos.addEventListener('change', applyTagStyle);
+    tagSize.addEventListener('input', applyTagStyle);
+    applyTagStyle();
+    // —— 根据图片整体色调，自动选择描述的对比色 ——
+    function analyzeToneFromImage(image){
       try{
-        const off = document.createElement('canvas'); const w=64,h=64;
-        off.width=w; off.height=h; const c2 = off.getContext('2d');
-        c2.drawImage(image,0,0,w,h);
-        const data = c2.getImageData(0,0,w,h).data; let sum=0;
-        for(let i=0;i<data.length;i+=4){ const r=data[i],g=data[i+1],b=data[i+2]; sum += 0.2126*r + 0.7152*g + 0.0722*b; }
-        return sum/(w*h);
-      }catch(e){ return 128; }
+        const off = document.createElement('canvas');
+        const w = 64, h = 64;
+        off.width = w; off.height = h;
+        const c2 = off.getContext('2d');
+        c2.drawImage(image, 0, 0, w, h);
+        const data = c2.getImageData(0,0,w,h).data;
+        let sum = 0; // 平均亮度
+        for(let i=0;i<data.length;i+=4){
+          const r = data[i], g = data[i+1], b = data[i+2];
+          // Rec. 709 加权亮度
+          sum += 0.2126*r + 0.7152*g + 0.0722*b;
+        }
+        return sum / (w*h);
+      }catch(e){
+        return 128; // 出错时给中性值
+      }
     }
-
-    // —— 画笔（临时）——
-    let drawing=false, last=null;
-    cvs.addEventListener('mousedown', e=>{ drawing=true; last={x:e.offsetX,y:e.offsetY}; });
-    cvs.addEventListener('mousemove', e=>{ if(!drawing) return; strokeTo(e.offsetX,e.offsetY); });
-    window.addEventListener('mouseup', ()=> drawing=false);
-    cvs.addEventListener('touchstart', e=>{ const t=e.changedTouches[0], r=cvs.getBoundingClientRect(); drawing=true; last={x:t.clientX-r.left,y:t.clientY-r.top}; e.preventDefault(); }, {passive:false});
-    cvs.addEventListener('touchmove', e=>{ if(!drawing) return; const t=e.changedTouches[0], r=cvs.getBoundingClientRect(); strokeTo(t.clientX-r.left,t.clientY-r.top); e.preventDefault(); }, {passive:false});
-    cvs.addEventListener('touchend', ()=> drawing=false);
-    function strokeTo(x,y){ ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle=penColor.value; ctx.lineWidth=+penSize.value; ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke(); last={x,y}; }
-
-    clearBtn.onclick = ()=> ctx.clearRect(0,0,cvs.width,cvs.height);
-    prevBtn.onclick = ()=>{ currentIndex = (currentIndex - 1 + (DATA[currentCat]||[]).length) % (DATA[currentCat]||[]).length; showImage(); };
-    nextBtn.onclick = ()=>{ currentIndex = (currentIndex + 1) % (DATA[currentCat]||[]).length; showImage(); };
-
+    function applyTagContrast(){
+      const lum = analyzeToneFromImage(img);
+      const isBright = lum >= 170; // 阈值可微调 160-180
+      photoTag.classList.remove('light','dark');
+      photoTag.classList.add(isBright ? 'light' : 'dark');
+    }
   </script>
 </body>
 </html>

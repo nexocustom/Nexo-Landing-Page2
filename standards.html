@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nexo Custom Interior — 施工标准（Clean）</title>
-  <meta name="description" content="Nexo 施工标准图库：类目/图片切换、覆盖描述、手机临时画笔（刷新清空）、描述位置与字体可调、自动对比色。" />
+  <title>Nexo Custom Interior — 施工标准（Clean, Stable）</title>
+  <meta name="description" content="Nexo 施工标准图库：类目/图片切换、覆盖描述、手机临时画笔（刷新清空）、描述位置与字体可调、自动对比色（同源）。" />
   <style>
     :root{ --bg:#0f172a; --panel:#0b1222; --muted:#94a3b8; --text:#e5e7eb; --brand:#ff6b35; }
     *{box-sizing:border-box}
@@ -39,21 +39,20 @@
     #sketch{position:absolute;inset:0;touch-action:none;z-index:2}
 
     /* 覆盖描述块（默认可见，左上） */
-    .tag{position:absolute;z-index:3;pointer-events:none;max-width:76%;left:12px;top:12px;
+    .tag{position:absolute;z-index:3;pointer-events:none;max-width:76%;
       font-size:1.2rem;line-height:1.35;font-weight:800;color:#fff;
       background:rgba(15,23,42,.45);padding:10px 12px;border-radius:10px;
       backdrop-filter: blur(3px);box-shadow:0 6px 16px rgba(0,0,0,.25);text-shadow:0 1px 2px rgba(0,0,0,.35)}
     .tag.light{color:#111;background:rgba(255,255,255,.55);text-shadow:none}
     /* 位置类 */
-    .pos-lt{left:12px;top:12px;right:auto;bottom:auto}
-    .pos-lb{left:12px;bottom:12px;right:auto;top:auto}
-    .pos-rt{right:12px;top:12px;left:auto;bottom:auto}
-    .pos-rb{right:12px;bottom:12px;left:auto;top:auto}
+    .pos-lt{left:12px;top:12px}
+    .pos-lb{left:12px;bottom:12px}
+    .pos-rt{right:12px;top:12px}
+    .pos-rb{right:12px;bottom:12px}
 
     .desc{background:#0b1222;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;color:#cbd5e1;min-height:50px}
     footer{margin-top:auto}
     footer .wrap{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;color:#94a3b8}
-      .errbox{margin-top:10px;background:#3b1d1d;border:1px solid #ef4444;color:#ffe4e6;border-radius:10px;padding:10px;display:none}
   </style>
 </head>
 <body>
@@ -69,7 +68,6 @@
     <div class="grid">
       <aside class="sidebar panel">
         <h3>类目</h3>
-        <div id="dataErrors" class="errbox"></div>
         <div class="cats" id="catList"></div>
         <div class="panel" style="margin-top:8px">
           <strong>当前图片</strong>
@@ -138,35 +136,13 @@
       ],
       "平整标准": [
         {file:"flatness_01.jpg", desc:"墙面平整，手感光滑无起伏"}
+      ],
+      "油漆标准": [
+        {file:"paint_01.jpg", desc:"涂刷均匀，无明显刷痕"},
+        {file:"paint_02.jpg", desc:"颜色一致，边缘整齐"}
       ]
     };
     const BASE = "assets/standards/";
-
-    // —— 校验辅助 ——
-    function validateData(){
-      const errors = [];
-      const cats = [];
-      if(Object.prototype.toString.call(DATA) !== '[object Object]'){
-        errors.push('DATA 必须是一个对象（形如 {"类目":[{file,desc}], ...}）。');
-        return {cats, errors};
-      }
-      for(const [cat, arr] of Object.entries(DATA)){
-        if(!Array.isArray(arr)) { errors.push(`类目 “${cat}” 的值必须是数组。`); continue; }
-        const validItems = arr.filter((it,idx)=>{
-          const ok = it && typeof it.file === 'string' && it.file.trim();
-          if(!ok) errors.push(`类目 “${cat}” 第 ${idx+1} 项缺少 file 字段或格式不正确。`);
-          return ok;
-        });
-        if(validItems.length){ cats.push(cat); } else { errors.push(`类目 “${cat}” 没有有效的图片条目。`); }
-      }
-      return {cats, errors};
-    }
-    function renderErrors(){
-      const box = document.getElementById('dataErrors');
-      const {errors} = validateData();
-      if(errors.length){ box.style.display='block'; box.innerHTML = '<strong>DATA 配置存在问题：</strong><br>' + errors.map(e=>'• '+e).join('<br>'); }
-      else { box.style.display='none'; box.innerHTML=''; }
-    }
 
     // ======== DOM refs ========
     const catList = document.getElementById('catList');
@@ -188,67 +164,68 @@
     let currentCat = null;
     let currentIndex = 0;
 
-    // ======== 初始化 ========
+    // ======== 启动 ========
     document.getElementById('year').textContent = new Date().getFullYear();
-    renderErrors();
-    buildCats();
-    window.addEventListener('resize', fitCanvas);
+    document.addEventListener('DOMContentLoaded', init);
 
-    // 类目 & 列表
-    function buildCats(){
-      try{
-        catList.innerHTML = '';
-        const {cats} = validateData();
-        if(!cats.length){ info.textContent='未找到可用类目，请检查 DATA 配置。'; return; }
-        cats.forEach(cat => {
-          const b = document.createElement('button');
-          b.textContent = cat; b.addEventListener('click', ()=> loadCat(cat));
-          catList.appendChild(b);
-        });
-        currentCat = cats[0];
-        loadCat(currentCat);
-      }catch(e){
-        const box = document.getElementById('dataErrors');
-        box.style.display='block';
-        box.innerHTML = '<strong>脚本错误：</strong> ' + (e?.message||e);
-      }
-    });
+    function init(){
+      renderCats();
+      const first = Object.keys(DATA)[0];
+      if(first){ selectCat(first); }
+      window.addEventListener('resize', fitCanvas);
     }
-    function loadCat(cat){
-      const {cats} = validateData();
-      if(!cats.includes(cat)) cat = cats[0];
+
+    // —— 类目 ——
+    function renderCats(){
+      catList.innerHTML = '';
+      const cats = Object.keys(DATA);
+      if(!cats.length){ info.textContent='未找到可用类目，请检查 DATA。'; return; }
+      for(const cat of cats){
+        const b = document.createElement('button');
+        b.textContent = cat;
+        b.onclick = ()=> selectCat(cat);
+        catList.appendChild(b);
+      }
+    }
+    function updateActiveCatButtons(){
+      for(const b of catList.children){ b.classList.toggle('active', b.textContent===currentCat); }
+    }
+
+    function selectCat(cat){
       currentCat = cat; currentIndex = 0;
-      [...catList.children].forEach(b=> b.classList.toggle('active', b.textContent===cat));
+      updateActiveCatButtons();
       renderImageList();
       showImage();
     }
+
+    // —— 图片列表 ——
     function renderImageList(){
       imageList.innerHTML = '';
-      (Array.isArray(DATA[currentCat])?DATA[currentCat]:[]).forEach((it,i)=>{
+      const arr = Array.isArray(DATA[currentCat]) ? DATA[currentCat] : [];
+      if(!arr.length){ imageList.innerHTML = '<span style="color:#fca5a5">该类目暂无图片</span>'; return; }
+      arr.forEach((it,i)=>{
         const a = document.createElement('a'); a.href='#'; a.textContent = it.file; a.style.color='#cbd5e1';
         a.onclick = (e)=>{ e.preventDefault(); currentIndex=i; showImage(); };
         imageList.appendChild(a);
       });
     }
 
-    // 渲染图片
+    // —— 显示图片 ——
     function showImage(){
-      const item = (Array.isArray(DATA[currentCat])?DATA[currentCat]:[])[currentIndex];
+      const arr = Array.isArray(DATA[currentCat]) ? DATA[currentCat] : [];
+      const item = arr[currentIndex];
       if(!item){ img.removeAttribute('src'); tag.textContent=''; info.textContent='该类目暂无图片。'; return; }
-      img.crossOrigin = 'anonymous'; // 若同源可读像素，跨域时自动降级
+      // 设置图片 & 描述
       img.src = `${BASE}${currentCat}/${item.file}`;
       tag.textContent = item.desc || '';
       info.textContent = `${currentCat} · ${item.file}`;
-      // 立即应用位置/字体（不等图片加载）
+      // 立即应用位置/字体，让首屏就可见
       applyTagStyle();
       // 清空画布
       ctx.clearRect(0,0,cvs.width,cvs.height);
-      // 加载完成后适配尺寸与对比色
-      if (img.complete) { onImageReady(); }
-      else {
-        img.onload = onImageReady;
-        img.onerror = ()=>{ fitCanvas(); applyTagToneFallback(); };
-      }
+      // 图片加载后做尺寸适配 & 自动对比色
+      if(img.complete){ onImageReady(); }
+      else { img.onload = onImageReady; img.onerror = ()=>{ fitCanvas(); applyTagToneFallback(); }; }
     }
     function onImageReady(){ fitCanvas(); applyTagContrast(); }
 
@@ -258,7 +235,7 @@
       ctx.clearRect(0,0,cvs.width,cvs.height);
     }
 
-    // —— 覆盖描述：位置/字体 ——
+    // —— 描述块：位置/字体 ——
     function applyTagStyle(){
       tag.classList.remove('pos-lt','pos-lb','pos-rt','pos-rb');
       const map = { lt:'pos-lt', lb:'pos-lb', rt:'pos-rt', rb:'pos-rb' };
@@ -268,16 +245,13 @@
     }
     tagPos.onchange = applyTagStyle; tagSize.oninput = applyTagStyle;
 
-    // —— 自动对比色（亮度阈值）——
+    // —— 自动对比色（同源时生效）——
     function applyTagContrast(){
       const lum = averageLuma(img);
-      tag.classList.toggle('light', lum >= 170); // 亮图→深色字
-      if(lum >= 170){ tag.classList.remove('dark'); } else { tag.classList.add('dark'); }
+      const isBright = lum >= 170; // 阈值可调 160-180
+      tag.classList.toggle('light', isBright);
     }
-    function applyTagToneFallback(){
-      // 失败时（跨域或异常）保留默认深底浅字
-      tag.classList.remove('light'); tag.classList.add('dark');
-    }
+    function applyTagToneFallback(){ tag.classList.remove('light'); }
     function averageLuma(image){
       try{
         const off = document.createElement('canvas'); const w=64,h=64;
@@ -299,10 +273,10 @@
     cvs.addEventListener('touchend', ()=> drawing=false);
     function strokeTo(x,y){ ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle=penColor.value; ctx.lineWidth=+penSize.value; ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke(); last={x,y}; }
 
+    // —— 工具按钮 ——
     clearBtn.onclick = ()=> ctx.clearRect(0,0,cvs.width,cvs.height);
-    prevBtn.onclick = ()=>{ currentIndex = (currentIndex - 1 + (Array.isArray(DATA[currentCat])?DATA[currentCat]:[]).length) % (Array.isArray(DATA[currentCat])?DATA[currentCat]:[]).length; showImage(); };
-    nextBtn.onclick = ()=>{ currentIndex = (currentIndex + 1) % (Array.isArray(DATA[currentCat])?DATA[currentCat]:[]).length; showImage(); };
-
+    prevBtn.onclick = ()=>{ const arr=Array.isArray(DATA[currentCat])?DATA[currentCat]:[]; if(!arr.length) return; currentIndex = (currentIndex - 1 + arr.length) % arr.length; showImage(); };
+    nextBtn.onclick = ()=>{ const arr=Array.isArray(DATA[currentCat])?DATA[currentCat]:[]; if(!arr.length) return; currentIndex = (currentIndex + 1) % arr.length; showImage(); };
   </script>
 </body>
 </html>

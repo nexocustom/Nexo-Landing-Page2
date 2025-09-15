@@ -64,3 +64,23 @@ main{padding:18px 20px 28px}
 /* Footer */
 footer{margin-top:auto; opacity:.9; border-top:1px solid var(--line)}
 footer .wrap{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; color:#94a3b8}
+/* --- Header 安全兜底与紧凑模式 --- */
+
+/* 1) 强制 sticky，避免被其他样式意外覆写成 fixed */
+header { position: sticky !important; top: 0; }
+
+/* 2) 紧凑版 Header（给工具型页面用） */
+.header--compact .brand-logo { height: 110px; }           /* 从 160px 降到 110px */
+.header--compact .titleblock h1 { font-size: 1.6rem; }    /* 从 2rem 降到 1.6rem */
+.header--compact .titleblock small { font-size: 1rem; }
+
+/* 移动端再稍微紧一些 */
+@media (max-width: 900px) {
+  .header--compact .brand-logo { height: 96px; }
+  .header--compact .titleblock h1 { font-size: 1.45rem; }
+}
+
+/* 3) 防遮挡保险：如果某页把 header 设成 fixed，这里给 main 一个兜底上边距 */
+/* 注：正常 sticky 时这个内边距不会影响布局感知 */
+body.header-fixed-safe main { padding-top: 120px; }
+@media (max-width: 900px) { body.header-fixed-safe main { padding-top: 96px; } }

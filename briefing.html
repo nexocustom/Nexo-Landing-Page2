@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nexo — 施工交底（工地 × 任务）</title>
+  <meta name="description" content="通过工地与任务分类，展示施工图片与说明，统一交底标准。">
+
+  <!-- Favicons（按你站点已有路径） -->
+  <link rel="icon" type="image/x-icon" href="assets/branding/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/branding/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/branding/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/branding/apple-touch-icon.png">
+
+  <style>
+    :root{
+      --bg:#0f172a; --panel:#0b1222; --card:#111827; --ink:#e5e7eb; --muted:#94a3b8;
+      --line:rgba(255,255,255,.10); --brand:#ff6b35; --ring:rgba(255,107,53,.35);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans SC","PingFang SC",Arial,sans-serif;
+         color:var(--ink);background:radial-gradient(1200px 800px at 70% -10%, #1f2937 0%, var(--bg) 60%);
+         min-height:100vh;display:flex;flex-direction:column}
+
+    /* ===== Header：与 index.html 同尺寸风格 ===== */
+    header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(15,23,42,.95),rgba(15,23,42,.75));
+           border-bottom:1px solid #1f2937;backdrop-filter:blur(6px)}
+    .wrap{max-width:1100px;margin:0 auto;padding:16px 20px}
+    .brand{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}
+    .brand-left{display:flex;align-items:center;gap:16px}
+    .brand-logo{height:160px;width:auto;display:block;filter:drop-shadow(0 8px 24px rgba(255,107,53,.2))}
+    .titleblock h1{font-size:2rem;margin:0;line-height:1.2}
+    .titleblock small{display:block;font-size:1.1rem;color:var(--muted);font-weight:500;margin-top:4px}
+    .nav a{margin-left:24px;font-size:1.05rem;font-weight:700;color:#ffd3c3;text-decoration:none}
+
+    /* ===== Layout ===== */
+    main{padding:18px 20px 28px}
+    .grid{display:grid;grid-template-columns:280px 1fr;gap:16px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+    .panel{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));
+           border:1px solid var(--line);border-radius:16px;padding:14px}
+    .panel h3{margin:0 0 10px}
+    .hint{color:var(--muted);font-size:.9rem}
+
+    .controls{display:grid;gap:10px}
+    label{font-size:.95rem}
+    select{width:100%;padding:10px 12px;border-radius:10px;background:#0b1222;color:#e5e7eb;
+           border:1px solid rgba(255,255,255,.18);accent-color:var(--brand);outline:none}
+
+    .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    @media(max-width:800px){.cards{grid-template-columns:1fr}}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));
+          border:1px solid var(--line);border-radius:16px;overflow:hidden}
+    .ph{position:relative;background:#0b1222}
+    .ph img{display:block;width:100%;height:260px;object-fit:cover}
+    .badge{position:absolute;left:12px;top:12px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.2);
+           padding:6px 10px;border-radius:999px;font-weight:700}
+    .desc{padding:12px 14px;color:#cbd5e1;border-top:1px solid var(--line);display:grid;gap:8px}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .row .small{color:#94a3b8;font-size:.9rem}
+    .ck{display:flex;align-items:center;gap:8px}
+    .ck input{width:18px;height:18px;accent-color:var(--brand)}
+
+    /* Lightbox */
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:50}
+    .lightbox.open{display:flex}
+    .lb-inner{position:relative;max-width:92vw;max-height:90vh}
+    .lb-inner img{max-width:100%;max-height:90vh;border-radius:12px;border:1px solid var(--line)}
+    .lb-cap{margin-top:8px;text-align:center;color:#e5e7eb}
+    .lb-btn{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border:none;border-radius:50%;
+            background:rgba(0,0,0,.45);color:#fff;font-size:22px;cursor:pointer}
+    .lb-prev{left:-58px}.lb-next{right:-58px}
+    @media(max-width:700px){.lb-prev{left:6px}.lb-next{right:6px}}
+
+    footer{margin-top:auto;border-top:1px solid var(--line)}
+    footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#94a3b8}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap brand">
+      <div class="brand-left">
+        <a href="index.html" style="display:flex;align-items:center;text-decoration:none">
+          <img class="brand-logo" src="assets/branding/nexo-logo-original.png" alt="Nexo Custom Interior">
+        </a>
+        <div class="titleblock">
+          <h1>Nexo Custom Interior <small>— Seattle</small></h1>
+          <small>施工交底 · 任务与标准</small>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="index.html">工作日志</a>
+        <a href="standards.html">施工标准</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <aside class="panel">
+        <h3>筛选</h3>
+        <div class="controls">
+          <label>工地
+            <select id="siteSel"></select>
+          </label>
+          <label>任务
+            <select id="taskSel"></select>
+          </label>
+          <div class="hint">把图片放到 <code>/assets/briefing/工地/任务/</code>，并在 <code>DATA</code> 中登记文件名与描述。</div>
+        </div>
+      </aside>
+
+      <section>
+        <div class="panel" style="margin-bottom:12px">
+          <strong id="headTitle">请选择工地与任务</strong>
+          <div class="hint" id="headHint">每张图附有说明；勾选“已阅读/完成”会保存在本机。</div>
+        </div>
+        <div class="cards" id="cards"></div>
+      </section>
+    </div>
+  </main>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+    <button class="lb-btn lb-prev" id="lbPrev" aria-label="上一张">‹</button>
+    <div class="lb-inner">
+      <img id="lbImg" alt="">
+      <div class="lb-cap" id="lbCap"></div>
+    </div>
+    <button class="lb-btn lb-next" id="lbNext" aria-label="下一张">›</button>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <small>© <span id="year"></span> Nexo Custom Interior. All rights reserved.</small>
+      <small>Seattle, WA · (206) 681-0020 · contact@nexoci.com</small>
+    </div>
+  </footer>
+
+  <script>
+    // ======= 数据示例：按工地 -> 任务 -> 图片数组 =======
+    const DATA = {
+      "Redmond工地1234": {
+        "维护房顶": [
+          {file:"patch_before_01.jpg", desc:"卧室北墙修补：砂纸打磨至平整，阴影角补齐"},
+          {file:"patch_after_01.jpg",  desc:"腻子找平无刀痕，侧光检查无明显起伏"}
+        ],
+        "楼上油漆": [
+          {file:"paint_prep_01.jpg",   desc:"遮蔽到位：门套/踢脚线边缘贴纸，地面覆盖"},
+          {file:"paint_finish_01.jpg", desc:"面漆两遍均匀，边界直线整齐无流挂"}
+        ]
+      },
+      "Redmond工地": {
+        "楼上墙面维修": [
+          {file:"rd_patch_01.jpg",     desc:"裂缝V字开槽填实，网带覆盖压平"},
+          {file:"rd_patch_02.jpg",     desc:"干透后细砂打磨，手摸无突点，清洁粉尘"}
+        ],
+        "楼上油漆": [
+          {file:"rd_paint_01.jpg",     desc:"底漆封闭色差，角线与五金遮蔽完整"},
+          {file:"rd_paint_02.jpg",     desc:"面漆完成：色差一致，开关面板边缘整洁"}
+        ]
+      }
+    };
+    const BASE = "assets/briefing/"; // 静态根目录
+
+    // ======= DOM =======
+    const siteSel = document.getElementById('siteSel');
+    const taskSel = document.getElementById('taskSel');
+    const cards   = document.getElementById('cards');
+    const headTitle = document.getElementById('headTitle');
+    const headHint  = document.getElementById('headHint');
+
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    const lbCap = document.getElementById('lbCap');
+    const lbPrev = document.getElementById('lbPrev');
+    const lbNext = document.getElementById('lbNext');
+
+    let currentSite = null, currentTask = null, currentList = [], currentIndex = 0;
+
+    // 年份
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // 路径安全拼接（对每个路径段进行 URL 编码，支持中文目录）
+    function safePath(...segments){
+      return segments.map(s => encodeURIComponent(s)).join('/');
+    }
+    // 本地存储键
+    const keyFor = (site, task, file)=> `brief:${site}:${task}:${file}`;
+
+    function init(){
+      // 构建工地下拉
+      siteSel.innerHTML = '';
+      const sites = Object.keys(DATA);
+      if(!sites.length){ headTitle.textContent = '未配置工地'; return; }
+      sites.forEach(site=>{
+        const o = document.createElement('option');
+        o.value = site; o.textContent = site; siteSel.appendChild(o);
+      });
+      currentSite = sites[0];
+      siteSel.value = currentSite;
+      buildTasks();
+
+      siteSel.onchange = ()=>{ currentSite = siteSel.value; buildTasks(); };
+      taskSel.onchange = ()=>{ currentTask = taskSel.value; renderCards(); };
+    }
+
+    function buildTasks(){
+      taskSel.innerHTML = '';
+      const tasks = Object.keys(DATA[currentSite] || {});
+      if(!tasks.length){ currentTask = null; cards.innerHTML = ''; headTitle.textContent=`${currentSite} · 暂无任务`; return; }
+      tasks.forEach(t=>{
+        const o = document.createElement('option');
+        o.value = t; o.textContent = t; taskSel.appendChild(o);
+      });
+      currentTask = tasks[0];
+      taskSel.value = currentTask;
+      renderCards();
+    }
+
+    function renderCards(){
+      cards.innerHTML = '';
+      const list = (DATA[currentSite] && DATA[currentSite][currentTask]) || [];
+      currentList = Array.isArray(list) ? list : [];
+      headTitle.textContent = `${currentSite} · ${currentTask}`;
+      headHint.textContent  = `共 ${currentList.length} 张；点图片可全屏查看，勾选“已阅读/完成”将保存在本机。`;
+
+      if(!currentList.length){
+        const empty = document.createElement('div');
+        empty.className = 'panel';
+        empty.textContent = '该任务暂无图片。';
+        cards.appendChild(empty);
+        return;
+      }
+
+      currentList.forEach((it,i)=>{
+        const key = keyFor(currentSite,currentTask,it.file);
+        const done = !!localStorage.getItem(key);
+        const src  = BASE + safePath(currentSite, currentTask, it.file);
+
+        const article = document.createElement('article');
+        article.className = 'card';
+        article.innerHTML = `
+          <div class="ph">
+            <span class="badge">${i+1}/${currentList.length}</span>
+            <img src="${src}" alt="${it.desc||''}" data-idx="${i}">
+          </div>
+          <div class="desc">
+            <div class="row">
+              <div class="small">${it.file}</div>
+              <label class="ck"><input type="checkbox" ${done?'checked':''} data-k="${key}">
+                <span>已阅读/完成</span></label>
+            </div>
+            <div>${it.desc||''}</div>
+          </div>
+        `;
+        cards.appendChild(article);
+      });
+
+      // 事件绑定
+      cards.querySelectorAll('.ph img').forEach(img=>{
+        img.addEventListener('click', e=>{
+          currentIndex = +e.target.dataset.idx;
+          openLightbox(currentIndex);
+        });
+      });
+      cards.querySelectorAll('input[type="checkbox"]').forEach(chk=>{
+        chk.addEventListener('change', e=>{
+          const k = e.target.dataset.k;
+          if(e.target.checked) localStorage.setItem(k, new Date().toLocaleString());
+          else localStorage.removeItem(k);
+        });
+      });
+    }
+
+    // Lightbox
+    function openLightbox(i){
+      const item = currentList[i];
+      if(!item){ return; }
+      lbImg.src = BASE + safePath(currentSite, currentTask, item.file);
+      lbCap.textContent = item.desc || '';
+      lb.classList.add('open');
+    }
+    function closeLightbox(){ lb.classList.remove('open'); }
+    function next(){ currentIndex = (currentIndex + 1) % currentList.length; openLightbox(currentIndex); }
+    function prev(){ currentIndex = (currentIndex - 1 + currentList.length) % currentList.length; openLightbox(currentIndex); }
+
+    lb.addEventListener('click', (e)=>{ if(e.target===lb) closeLightbox(); });
+    document.addEventListener('keydown', (e)=>{ if(!lb.classList.contains('open')) return;
+      if(e.key==='Escape') closeLightbox(); if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); });
+    lbNext.addEventListener('click', next); lbPrev.addEventListener('click', prev);
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

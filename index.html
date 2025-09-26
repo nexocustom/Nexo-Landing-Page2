@@ -95,13 +95,41 @@
   </div>
 </header>
   <section class="wrap hero">
+    <!-- === 巨型按钮区块 === -->
+<section class="wrap" style="margin-top:60px;text-align:center">
+  <a href="https://docs.google.com/document/d/1v1IXLLzNHj5A-mk-Vhaw8R2JIXaLQ3dhXF0MpSlLyjg/view"
+     target="_blank"
+     class="btn btn-giant">
+    📑 打开工作详情文档
+  </a>
+</section>
+
+<style>
+  .btn-giant {
+    display:inline-block;
+    font-size:2rem;
+    padding:24px 48px;
+    border-radius:18px;
+    background:linear-gradient(180deg,#ffd3c3,#ff9c6e);
+    color:#111;
+    font-weight:900;
+    box-shadow:0 12px 32px rgba(255,107,53,.35);
+    text-decoration:none;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-giant:hover {
+    transform:scale(1.05);
+    box-shadow:0 16px 40px rgba(255,107,53,.45);
+  }
+</style>
+
     <div class="grid">
       <div class="card">
         <span class="badge">🐷 🐷 🐷</span>
-        <h2 class="highlight">一群猪在西雅图搞装修</h2>
+        <h2 class="highlight">猪猪们在西雅图搞装修</h2>
         <p class="muted">A bunch of piggies doing remodel work in the Seattle area — and doing it well.</p>
         <div class="kbar">
-          <kbd>Hi, 阿恒 👋</kbd>
+          <kbd>Hi, 恒亲王 👋</kbd>
           <kbd>每天填写 2 次：中/晚</kbd>
           <kbd class="clock" id="clock">--:--</kbd>
         </div>
@@ -158,7 +186,7 @@
           <div class="status"><span class="dot warn" id="dot-evening"></span><span id="state-evening">今日未完成</span></div>
         </div>
         <div class="btnrow">
-          <a class="btn brand" href="https://docs.google.com/forms/d/1WmPeD936oUCeNvHnlOWLoGrZ3CFR41jmgoIKucpjAJo/viewform?usp=header" target="_blank">打开表单</a>
+          <a class="btn brand" href="https://docs.google.com/document/d/1Ly20ApbBlJaBh59w63Ojz7HHlnr2Qq2F4crqh_IaFyQ/edit?usp=sharing" target="_blank">打开表单</a>
           <button class="btn ghost" id="mark-evening">标记完成</button>
         </div>
         <div class="muted" id="time-evening"></div>
@@ -168,7 +196,7 @@
   <footer>
     <div class="wrap">
       <small>© <span id="year"></span> Nexo Custom Interior. All rights reserved.</small>
-      <small>Seattle, WA · (206) 681-0020 · contact@nexoci.com</small>
+      <small>Seattle, WA · (206) 699-9000 · contact@nexoci.com</small>
     </div>
   </footer>
   <script>
